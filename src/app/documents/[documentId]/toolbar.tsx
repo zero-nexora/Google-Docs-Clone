@@ -280,8 +280,6 @@ const ImageButton = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [imageUrl, setImageUrl] = useState("");
 
-  console.log(editor?.getAttributes("link").href, "TEST");
-
   const onChange = (src: string) => {
     editor?.chain().focus().setImage({ src }).run();
   };
@@ -358,8 +356,6 @@ const ImageButton = () => {
 const LinkButton = () => {
   const { editor } = useEditorStore();
   const [value, setValue] = useState("");
-
-  console.log(editor?.getAttributes("link").href, "TEST");
 
   const onChange = (href: string) => {
     editor?.chain().focus().extendMarkRange("link").setLink({ href }).run();
@@ -567,11 +563,13 @@ export const Toolbar = () => {
         {
           label: "Undo",
           icon: Undo2Icon,
+          isActive: editor?.can().undo(),
           onClick: () => editor?.chain().focus().undo().run(),
         },
         {
           label: "Redo",
           icon: Redo2Icon,
+          isActive: editor?.can().redo(),
           onClick: () => editor?.chain().focus().redo().run(),
         },
         {

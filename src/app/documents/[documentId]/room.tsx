@@ -1,7 +1,11 @@
 "use client";
 
 import { ReactNode, useEffect, useMemo, useState } from "react";
-import { LiveblocksProvider, RoomProvider, ClientSideSuspense } from "@liveblocks/react/suspense";
+import {
+  LiveblocksProvider,
+  RoomProvider,
+  ClientSideSuspense,
+} from "@liveblocks/react/suspense";
 import { useParams } from "next/navigation";
 import { FullscreenLoader } from "@/components/fullscreen-loader";
 import { getUsers, getDocuments } from "./action";
@@ -9,7 +13,7 @@ import { toast } from "sonner";
 import { Id } from "../../../../convex/_generated/dataModel";
 import { LEFT_MARGIN_DEFAULT, RIGHT_MARGIN_DEFAULT } from "@/constants/margins";
 
-type User = { id: string; name: string; avatar: string; color: string; };
+type User = { id: string; name: string; avatar: string; color: string };
 
 export function Room({ children }: { children: ReactNode }) {
   const params = useParams();
@@ -47,9 +51,13 @@ export function Room({ children }: { children: ReactNode }) {
         return await response.json();
       }}
       resolveUsers={({ userIds }) => {
-        return userIds.map((userId) => users.find((user) => user.id === userId) ?? undefined);
+        console.log("resolveUsers");
+        return userIds.map(
+          (userId) => users.find((user) => user.id === userId) ?? undefined
+        );
       }}
       resolveMentionSuggestions={({ text }) => {
+        console.log("resolveMentionSuggestions");
         let filteredUsers = users;
 
         if (text) {
@@ -61,6 +69,7 @@ export function Room({ children }: { children: ReactNode }) {
         return filteredUsers.map((user) => user.id);
       }}
       resolveRoomsInfo={async ({ roomIds }) => {
+        console.log("resolveRoomsInfo");
         const documents = await getDocuments(roomIds as Id<"documents">[]);
         return documents.map((document) => ({
           id: document.id,
@@ -70,9 +79,14 @@ export function Room({ children }: { children: ReactNode }) {
     >
       <RoomProvider
         id={params.documentId as string}
-        initialStorage={{ leftMargin: LEFT_MARGIN_DEFAULT, rightMargin: RIGHT_MARGIN_DEFAULT }}
+        initialStorage={{
+          leftMargin: LEFT_MARGIN_DEFAULT,
+          rightMargin: RIGHT_MARGIN_DEFAULT,
+        }}
       >
-        <ClientSideSuspense fallback={<FullscreenLoader label="Room loading..." />}>
+        <ClientSideSuspense
+          fallback={<FullscreenLoader label="Room loading..." />}
+        >
           {children}
         </ClientSideSuspense>
       </RoomProvider>
