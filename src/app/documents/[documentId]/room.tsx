@@ -51,13 +51,11 @@ export function Room({ children }: { children: ReactNode }) {
         return await response.json();
       }}
       resolveUsers={({ userIds }) => {
-        console.log("resolveUsers");
         return userIds.map(
           (userId) => users.find((user) => user.id === userId) ?? undefined
         );
       }}
       resolveMentionSuggestions={({ text }) => {
-        console.log("resolveMentionSuggestions");
         let filteredUsers = users;
 
         if (text) {
@@ -69,7 +67,6 @@ export function Room({ children }: { children: ReactNode }) {
         return filteredUsers.map((user) => user.id);
       }}
       resolveRoomsInfo={async ({ roomIds }) => {
-        console.log("resolveRoomsInfo");
         const documents = await getDocuments(roomIds as Id<"documents">[]);
         return documents.map((document) => ({
           id: document.id,
